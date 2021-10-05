@@ -7,7 +7,6 @@ from tkinter import simpledialog
 HOST = '127.0.0.1'
 PORT = 9090
 
-
 class Client:
 
     def __init__(self, host, port):
@@ -18,7 +17,7 @@ class Client:
         msg.withdraw()
 
         self.nickname = simpledialog.askstring("输入昵称", "请输入你的昵称", parent=msg)
-
+        self.password = simpledialog.askstring("输入密码", "请输入你的密码", parent=msg,show='*')
         self.gui_done = False
         self.running = True
 
@@ -58,7 +57,7 @@ class Client:
         self.win.mainloop()
 
     def write(self):
-        message = f"{self.nickname}: {self.input_area.get('1.0', 'end')}"
+        message = f"{self.input_area.get('1.0', 'end')}"
         self.sock.send(message.encode('utf-8'))
         self.input_area.delete('1.0', 'end')
 
@@ -74,6 +73,8 @@ class Client:
                 message = self.sock.recv(1024).decode('utf-8')
                 if message == "NIKE":
                     self.sock.send(self.nickname.encode('utf-8'))
+                elif message == "PWD":
+                    self.sock.send(self.password.encode('utf-8'))
                 else:
                     if self.gui_done:
                         self.text_area.configure(state='normal')

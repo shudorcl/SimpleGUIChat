@@ -53,8 +53,8 @@ def handle(client):
     while True:
         try:
             message = client.recv(1024).decode('utf-8')
-            msg = f"{nicknames[clients.index(client)]}:{message}"
-            print(msg)
+            msg = f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} {nicknames[clients.index(client)]}:{message}"
+            print(msg.strip())
             if message[0] == '@':
                 pattern = re.compile(r'@.*@')
                 find = pattern.search(message).group(0)
@@ -69,8 +69,8 @@ def handle(client):
                         client.send(f"错误:{e}\n".encode('utf-8'))
                 else:
                     client.send(f"错误:该用户不存在！\n".encode('utf-8'))
-            elif message == '.userlist':
-                msg = f"server:当前在线用户有{len(nicknames)}人:\n"
+            elif message == '.userlist\n':
+                msg = f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} server:当前在线用户有{len(nicknames)}人:\n"
                 msg += '\n'.join(nicknames)
                 msg += '\n'
                 client.send(msg.encode('utf-8'))
@@ -84,18 +84,21 @@ def handle(client):
 
 
 def register(client, name, address):
-    print(f"创建新用户:{name}")
-    client.send("创建了新用户，欢迎加入服务器\n".encode('utf-8'))
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 创建新用户:{name}")
+    client.send(
+        f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 创建了新用户，欢迎加入服务器\n".encode('utf-8'))
 
 
 def authsuccess(client, name, address):
-    print(f"用户{name}连接至服务器")
-    client.send("已连接至服务器\n".encode('utf-8'))
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 用户{name}连接至服务器")
+    client.send(
+        f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 验证成功，已连接至服务器\n".encode('utf-8'))
 
 
 def authfail(client, name, address):
-    print(f"用户{name}验证失败，请求来自{address}！")
-    client.send("验证失败！请重新登陆！\n".encode('utf-8'))
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 用户{name}验证失败，请求来自{address}！")
+    client.send(
+        f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 验证失败！请重新登陆！\n".encode('utf-8'))
 
 
 def receive():
@@ -117,7 +120,8 @@ def receive():
             print(f"已断开与{address}的连接")
             continue
         save_data()
-        broadcast(f"{nickname}==桑加入了服务器!\n".encode('utf-8'))
+        broadcast(
+            f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} {nickname}=桑加入了服务器!\n".encode('utf-8'))
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
 

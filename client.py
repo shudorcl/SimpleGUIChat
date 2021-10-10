@@ -1,3 +1,4 @@
+import time
 import socket
 import threading
 import tkinter
@@ -25,6 +26,7 @@ class Client:
         receive_thread = threading.Thread(target=self.receive)
 
         gui_thread.start()
+        time.sleep(1)
         receive_thread.start()
 
     def gui_loop(self):
@@ -71,6 +73,7 @@ class Client:
         while self.running:
             try:
                 message = self.sock.recv(1024).decode('utf-8')
+                print(f"{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())} 收到消息：{message.strip()}")
                 if message == "NIKE":
                     self.sock.send(self.nickname.encode('utf-8'))
                 elif message == "PWD":
